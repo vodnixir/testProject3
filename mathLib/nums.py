@@ -35,6 +35,13 @@ def minus(a, b):
 
 
 def multy(a, b):
+    """
+    возвращает произведение аргументов a и b
+
+    :param a:
+    :param b:
+    :return:
+    """
     return a * b
 
 
