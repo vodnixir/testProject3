@@ -41,11 +41,27 @@ def multy(a, b):
     :param a:
     :param b:
     :return:
+
+    >>> multy(2,8)
+    16
+    >>> multy(4,-3)
+    -12
     """
     return a * b
 
 
 def div(a, b):
+    """
+    возвращает аргументов a и b
+    :param a:
+    :param b:
+    :return:
+
+    >>> div(8,4)
+    2.0
+    >>> div(7,2)
+    3.5
+    """
     return a / b
 
 
