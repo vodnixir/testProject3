@@ -34,13 +34,27 @@ class Fish(pg.sprite.Sprite):
         self.direction = randint(0, 1)
         if self.direction == 0:
             # слева направо
-            self.image = pg.image.load(os.path.join(images_folder, "fish7R.png"))
+            a = randint(1, 2)
+            if a == 1:
+                self.image = pg.image.load(os.path.join(images_folder, "fish7R.png"))
+            if a == 2:
+                self.image = pg.image.load(os.path.join(images_folder, "fish8R.png"))
+            if a == 3:
+                self.image = pg.image.load(os.path.join(images_folder, "fish9R.png"))
+
             self.length = self.image.get_width()
             self.xcoord = 0 - self.length
             self.speed = randint(1, 3)
         else:
             # справа налево
-            self.image = pg.image.load(os.path.join(images_folder, "fish7L.png"))
+            self.image = randint(1, 2)
+            b = randint(1, 2)
+            if b == 1:
+                self.image = pg.image.load(os.path.join(images_folder, "fish7L.png"))
+            if b == 2:
+                self.image = pg.image.load(os.path.join(images_folder, "fish8L.png"))
+            if b == 3:
+                self.image = pg.image.load(os.path.join(images_folder, "fish9L.png"))
             self.length = self.image.get_width()
             self.xcoord = SCREEN_WIDTH + self.length
             self.speed = randint(-3, -1)
