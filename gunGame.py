@@ -1,6 +1,7 @@
 import pygame as pg
 from random import randint
 import numpy as np
+import datetime as dt
 
 FPS = 60
 WHITE = (255, 255, 255)
@@ -19,6 +20,9 @@ DOT_COLOR = YELLOW
 AUTO_MOVE_NONE = 0
 AUTO_MOVE_UP = 1
 AUTO_MOVE_DOWN = 2
+AUTO_MOVE_LEFT= 3
+AUTO_MOVE_RIGHT = 4
+
 CANON_SPEED = 360  # pixels per second
 
 
@@ -70,15 +74,26 @@ class GameManager:
                 print(f"Key={event.key}")
                 if event.key == pg.K_s:
                     # self.gun.move(-5)
-                    self.gun.auto_move = AUTO_MOVE_DOWN
-                elif event.key == pg.K_w:
+                    self.gun.auto_move_y = AUTO_MOVE_DOWN
+                if event.key == pg.K_w:
                     # self.gun.move(5)
-                    self.gun.auto_move = AUTO_MOVE_UP
+                    self.gun.auto_move_y = AUTO_MOVE_UP
+                if event.key == pg.K_d:
+                    # self.gun.move(-5)
+                    self.gun.auto_move_x = AUTO_MOVE_LEFT
+                if event.key == pg.K_a:
+                    # self.gun.move(5)
+                    self.gun.auto_move_x = AUTO_MOVE_RIGHT
+
             elif event.type == pg.KEYUP:
                 if event.key == pg.K_s:
-                    self.gun.auto_move = AUTO_MOVE_NONE
+                    self.gun.auto_move_y = AUTO_MOVE_NONE
                 elif event.key == pg.K_w:
-                    self.gun.auto_move = AUTO_MOVE_NONE
+                    self.gun.auto_move_y = AUTO_MOVE_NONE
+                if event.key == pg.K_a:
+                    self.gun.auto_move_x = AUTO_MOVE_NONE
+                elif event.key == pg.K_d:
+                    self.gun.auto_move_x = AUTO_MOVE_NONE
             elif event.type == pg.MOUSEBUTTONDOWN:
                 # print(f"Mouse {event.button} down")
                 if event.button == 1:
@@ -93,13 +108,12 @@ class GameManager:
     def update(self):
         self.gun.update()
         dead_bullets = []
-        for i,bullet in enumerate(self.bullets):
+        for i, bullet in enumerate(self.bullets):
             bullet.move(time=1, grav=2)
             if not bullet.is_alive:
                 dead_bullets.append(i)
         for i in reversed(dead_bullets):
             self.bullets.pop(i)
-
 
     def collide(self):
         pass
@@ -128,7 +142,8 @@ class Cannon(GameObject):
         self.dot_color = dot_color
         self.active = False
         self.pow = min_pow
-        self.auto_move = AUTO_MOVE_NONE
+        self.auto_move_x = AUTO_MOVE_NONE
+        self.auto_move_y = AUTO_MOVE_NONE
 
     def set_angle(self, target_pos):
         # пушка
@@ -146,14 +161,19 @@ class Cannon(GameObject):
         pg.draw.circle(screen, self.dot_color, (gun_pos + vec_2).tolist(), self.pow // 10)
         pg.draw.line(screen, self.color, gun_pos.tolist(), (gun_pos + vec_2).tolist())
 
-    def move(self, delta):
-        self.coord[1] += delta
+    def move(self, deltaX, deltaY):
+        self.coord[1] += deltaY
+        self.coord[0] += deltaX
 
     def update(self):
-        if self.auto_move == AUTO_MOVE_UP:
-            self.move(-CANON_SPEED // FPS)
-        elif self.auto_move == AUTO_MOVE_DOWN:
-            self.move(CANON_SPEED // FPS)
+        if self.auto_move_y == AUTO_MOVE_UP:
+            self.move(0,-CANON_SPEED // FPS)
+        elif self.auto_move_y == AUTO_MOVE_DOWN:
+            self.move(0,CANON_SPEED // FPS)
+        if self.auto_move_x == AUTO_MOVE_RIGHT:
+            self.move(-CANON_SPEED // FPS,0)
+        elif self.auto_move_x == AUTO_MOVE_LEFT:
+            self.move(CANON_SPEED // FPS,0)
         if self.active:
             self.pow += 5
             if self.pow > self.max_pow:
